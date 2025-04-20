@@ -1,4 +1,4 @@
-# Buzmarkt
+# buzmarkt
 
 ## Kurulum
 
@@ -38,4 +38,5 @@ npm run ios
 # Metro bundler
 npm start
 ```
+
 
