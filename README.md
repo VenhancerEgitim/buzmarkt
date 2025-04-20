@@ -1,2 +1,2 @@
-# buz-markt
+# buzmarkt
 burak buz market uygulaması
