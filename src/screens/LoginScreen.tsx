@@ -1,100 +1,149 @@
-import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthStackParamList, RootStackParamList} from '../navigation/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {login} from '../services/api';
-import {commonStyles, colors} from '../styles/theme';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackNavigationProp } from '../types/navigation.types';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../store/slices/authSlice';
+import { AppDispatch, RootState } from '../store';
 
 const LoginScreen = () => {
+  const navigation = useNavigation<RootStackNavigationProp>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const navigation = useNavigation<
-    NativeStackNavigationProp<AuthStackParamList & RootStackParamList>
-  >();
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in both email and password fields.');
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     try {
-      setLoading(true);
-      const response = await login({email, password});
-      await AsyncStorage.setItem('userToken', response.token);
-      navigation.replace('Main');
+      await dispatch(loginUser({ email, password })).unwrap();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainTabs' }],
+      });
     } catch (error) {
-      Alert.alert(
-        'Login Failed',
-        'Invalid email or password. Please try again.',
-      );
-      console.error('Login error:', error);
-    } finally {
-      setLoading(false);
+      Alert.alert('Error', error instanceof Error ? error.message : 'Login failed');
     }
   };
 
   return (
-    <View style={commonStyles.container}>
-      <Image
-        source={require('../assets/buz.png')}
-        style={commonStyles.logo}
-        resizeMode="contain"
-      />
-      <Text style={commonStyles.title}>Login</Text>
-      <Text style={commonStyles.subtitle}>Enter your email and password</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.title}>Login</Text>
+        <Text style={styles.subtitle}>Please sign in to continue</Text>
 
-      <View style={commonStyles.inputContainer}>
-        <TextInput
-          style={[commonStyles.input, !email && commonStyles.inputError]}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          editable={!loading}
-        />
-        <View style={commonStyles.passwordContainer}>
+        <View style={styles.form}>
           <TextInput
-            style={[commonStyles.input, commonStyles.passwordInput, !password && commonStyles.inputError]}
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+
+          <TextInput
+            style={styles.input}
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-            editable={!loading}
+            secureTextEntry
           />
+
           <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={commonStyles.eyeIcon}
-            disabled={loading}>
-            <Text>{showPassword ? '👁️' : '👁️'}</Text>
+            style={styles.loginButton}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.loginButtonText}>Login</Text>
+            )}
           </TouchableOpacity>
         </View>
-      </View>
 
-      <TouchableOpacity
-        style={[commonStyles.button, loading && commonStyles.disabledButton]}
-        onPress={handleLogin}
-        disabled={loading}>
-        {loading ? (
-          <ActivityIndicator color={colors.white} />
-        ) : (
-          <Text style={commonStyles.buttonText}>Login</Text>
-        )}
-      </TouchableOpacity>
-
-      <View style={commonStyles.navigationContainer}>
-        <Text style={commonStyles.navigationText}>Don't have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-          <Text style={commonStyles.linkText}>Sign Up</Text>
+        <TouchableOpacity
+          style={styles.registerButton}
+          onPress={() => navigation.navigate('Register')}
+        >
+          <Text style={styles.registerButtonText}>
+            Don't have an account? Register
+          </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#181725',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#7C7C7C',
+    marginBottom: 30,
+  },
+  form: {
+    gap: 16,
+  },
+  input: {
+    height: 56,
+    borderWidth: 1,
+    borderColor: '#E2E2E2',
+    borderRadius: 18,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    color: '#181725',
+  },
+  loginButton: {
+    backgroundColor: '#53B175',
+    height: 56,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  loginButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  registerButton: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  registerButtonText: {
+    color: '#53B175',
+    fontSize: 16,
+  },
+});
 
 export default LoginScreen;

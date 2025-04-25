@@ -1,21 +1,19 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/types';
+import {useDispatch} from 'react-redux';
+import {logout} from '../store/slices/authSlice';
 import {commonStyles, colors} from '../styles/theme';
 
 const MainScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('userToken');
-      navigation.replace('Auth');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+  const handleLogout = () => {
+    dispatch(logout());
+    navigation.replace('Auth');
   };
 
   return (

@@ -3,8 +3,8 @@ import {View, Text, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AuthStackParamList, RootStackParamList} from '../navigation/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {signup} from '../services/api';
+import {useDispatch} from 'react-redux';
+import {login} from '../store/slices/authSlice';
 import {SignupSchema} from '../utils/validation';
 import {Formik} from 'formik';
 import {commonStyles, colors} from '../styles/theme';
@@ -14,12 +14,13 @@ const SignupScreen = () => {
   const navigation = useNavigation<
     NativeStackNavigationProp<AuthStackParamList & RootStackParamList>
   >();
+  const dispatch = useDispatch();
 
   return (
     <ScrollView contentContainerStyle={[commonStyles.container, {width: '100%'}]}>
       <View style={[commonStyles.container, {width: '100%'}]}>
         <Image
-          source={require('../assets/buz.png')}
+          source={require('../assets/logo.png')}
           style={commonStyles.logo}
           resizeMode="contain"
         />
@@ -31,9 +32,18 @@ const SignupScreen = () => {
           validationSchema={SignupSchema}
           onSubmit={async (values, {setSubmitting}) => {
             try {
-              const response = await signup(values);
-              await AsyncStorage.setItem('userToken', response.token);
-              navigation.replace('Main');
+              // Burada gerçek signup işlemleri yapılacak
+              console.log('Signup values:', values);
+              
+              // Başarılı signup sonrası Redux state'i güncelle
+              dispatch(login({
+                email: values.email,
+                name: values.username,
+              }));
+              
+              navigation.replace('MainTabs', {
+                screen: 'Explore'
+              });
             } catch (error) {
               Alert.alert(
                 'Registration Failed',
