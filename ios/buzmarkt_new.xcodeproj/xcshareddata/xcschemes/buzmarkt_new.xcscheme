@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "buzmarkt.app"
-               BlueprintName = "buzmarkt"
-               ReferencedContainer = "container:buzmarkt.xcodeproj">
+               BuildableName = "buzmarkt_new.app"
+               BlueprintName = "buzmarkt_new"
+               ReferencedContainer = "container:buzmarkt_new.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "buzmarktTests.xctest"
-               BlueprintName = "buzmarktTests"
-               ReferencedContainer = "container:buzmarkt.xcodeproj">
+               BuildableName = "buzmarkt_newTests.xctest"
+               BlueprintName = "buzmarkt_newTests"
+               ReferencedContainer = "container:buzmarkt_new.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "buzmarkt.app"
-            BlueprintName = "buzmarkt"
-            ReferencedContainer = "container:buzmarkt.xcodeproj">
+            BuildableName = "buzmarkt_new.app"
+            BlueprintName = "buzmarkt_new"
+            ReferencedContainer = "container:buzmarkt_new.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "buzmarkt.app"
-            BlueprintName = "buzmarkt"
-            ReferencedContainer = "container:buzmarkt.xcodeproj">
+            BuildableName = "buzmarkt_new.app"
+            BlueprintName = "buzmarkt_new"
+            ReferencedContainer = "container:buzmarkt_new.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

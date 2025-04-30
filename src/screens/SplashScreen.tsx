@@ -1,45 +1,33 @@
-import React, {useEffect} from 'react';
-import {View, Image, Text, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '@/navigation/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Image, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation.types';
+
+type SplashScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const SplashScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<SplashScreenNavigationProp>();
 
   useEffect(() => {
-    checkAuthStatus();
-  }, []);
+    const timer = setTimeout(() => {
+      navigation.replace('Welcome');
+    }, 2000);
 
-  const checkAuthStatus = async () => {
-    try {
-      // 2 saniyelik yapay gecikme ekleyelim ki splash screen görülebilsin
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const userToken = await AsyncStorage.getItem('userToken');
-      
-      if (userToken) {
-        // Kullanıcı giriş yapmış
-        navigation.replace('Main');
-      } else {
-        // Kullanıcı giriş yapmamış
-        navigation.replace('Auth');
-      }
-    } catch (error) {
-      console.error('Authentication check error:', error);
-      navigation.replace('Auth');
-    }
-  };
+    return () => clearTimeout(timer);
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
+      <View style={styles.logoContainer}>
       <Image
-        source={require('../assets/buz.png')}
+          source={require('../assets/images/logo.png')}
         style={styles.logo}
         resizeMode="contain"
       />
-      <Text style={styles.title}>Buzmarkt</Text>
+        <Text style={styles.appName}>BuzMarkt</Text>
+        <Text style={styles.subtitle}>online groceries</Text>
+      </View>
     </View>
   );
 };
@@ -47,19 +35,27 @@ const SplashScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: '#53B175',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 80,
+    height: 80,
     marginBottom: 20,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000',
+  appName: {
+    fontSize: 48,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    marginTop: 5,
   },
 });
 
